@@ -57,7 +57,7 @@
                         <button class="btn btn-success" type="submit"><i class="fas fa-trash-alt d-lg-none"></i><span class="d-none d-lg-block">Activar</span></button>
                     </form>
                     @endif
-                    @if ($usuario->hasRole('superadmin'))
+                    @if (auth()->user()->hasRole('superadmin'))
 
 
                     @if ($usuario->hasRole('admin'))

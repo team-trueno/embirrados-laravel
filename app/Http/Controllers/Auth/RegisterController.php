@@ -67,7 +67,7 @@ class RegisterController extends Controller
         return Validator::make($data, [
             'name' => ['required', 'string', 'max:255'],
             'apellido' => ['required', 'string', 'max:255'],
-            'usuario' => ['required', 'string', 'max:255'],
+            'usuario' => ['required', 'string', 'max:255', 'unique:users'],
             'avatar' => ['required', 'image'],
             'pais' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
@@ -99,6 +99,9 @@ class RegisterController extends Controller
         ]);
 
         $user->jugador()->create();
+        $user->perfil()->create([
+            'profile_type' => 'jugador',
+        ]);
 
         $user->roles()->attach(Role::where('name', 'user')->first());
 

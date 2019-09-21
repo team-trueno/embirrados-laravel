@@ -6,7 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class Nivel extends Model
 {
-
     /**
      * The attributes that are mass assignable.
      *

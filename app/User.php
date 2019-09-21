@@ -44,6 +44,11 @@ class User extends Authenticatable
         return $this->hasOne('App\Jugador', 'user_id');
     }
 
+    public function perfil()
+    {
+        return $this->hasOne('App\Perfil', 'owner_id');
+    }
+
     public function roles()
     {
         return $this->belongsToMany(Role::class)->withTimestamps();
@@ -58,8 +63,10 @@ class User extends Authenticatable
     {
         if ($value) {
             $this->roles()->attach(Role::where('name', 'admin')->first());
+            $this->perfil->hacerAdmin();
         } else {
             $this->roles()->detach(Role::where('name', 'admin')->first());
+            $this->perfil->hacerJugador();
         }
     }
 

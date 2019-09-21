@@ -40,7 +40,7 @@
                                     @endforelse
                                     </tbody>
                                 </table>
-                                {{ $jugadores->links() }}
+                                {{-- {{ $jugadores->links() }} --}}
                             </div>
                         </div>
 

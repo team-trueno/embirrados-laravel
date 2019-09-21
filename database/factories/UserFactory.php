@@ -36,12 +36,21 @@ $factory->afterCreating(User::class, function ($user, $faker) {
 
 $factory->afterCreatingState(User::class, 'jugador', function ($user, $faker) {
     $user->jugador()->create();
+    $user->perfil()->create([
+        'profile_type' => 'jugador',
+    ]);
 });
 
 $factory->afterCreatingState(User::class, 'admin', function ($user, $faker) {
     $user->roles()->attach(App\Role::where('name', 'admin')->first());
+    $user->perfil()->create([
+        'profile_type' => 'admin',
+    ]);
 });
 
 $factory->afterCreatingState(User::class, 'superadmin', function ($user, $faker) {
     $user->roles()->attach(App\Role::where('name', 'superadmin')->first());
+    $user->perfil()->update([
+        'profile_type' => 'superadmin',
+    ]);
 });

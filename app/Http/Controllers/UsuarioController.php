@@ -13,7 +13,8 @@ class UsuarioController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(){
+    public function index()
+    {
         auth()->user()->authorizeRoles(['admin', 'superadmin']);
 
         $usuarios = User::paginate(10);
@@ -48,12 +49,12 @@ class UsuarioController extends Controller
         ];
 
         $mensajes = [
-            'string'=>'El campo :attribute debe ser un texto',
-            'min'=>'El campo :attribute debe tener un minimo de :min',
-            'max'=>'El campo :attribute debe tener un máximo de :max',
-            'numeric'=>'El campo :attribute debe ser un numero',
-            'integer'=>'El campo :attribute debe ser un número entero',
-            'unique'=>'Este e-mail ya existe'
+            'string' => 'El campo :attribute debe ser un texto',
+            'min' => 'El campo :attribute debe tener un minimo de :min',
+            'max' => 'El campo :attribute debe tener un máximo de :max',
+            'numeric' => 'El campo :attribute debe ser un numero',
+            'integer' => 'El campo :attribute debe ser un número entero',
+            'unique' => 'Este e-mail ya existe'
         ];
 
         $route = $request['avatar']->store('/public/img/avatars');
@@ -124,11 +125,11 @@ class UsuarioController extends Controller
         ];
 
         $mensajes = [
-            'string'=>'El campo :attribute debe ser un texto',
-            'min'=>'El campo :attribute debe tener un minimo de :min',
-            'max'=>'El campo :attribute debe tener un máximo de :max',
-            'numeric'=>'El campo :attribute debe ser un numero',
-            'integer'=>'El campo :attribute debe ser un número entero'
+            'string' => 'El campo :attribute debe ser un texto',
+            'min' => 'El campo :attribute debe tener un minimo de :min',
+            'max' => 'El campo :attribute debe tener un máximo de :max',
+            'numeric' => 'El campo :attribute debe ser un numero',
+            'integer' => 'El campo :attribute debe ser un número entero'
         ];
 
         $route = $request['avatar']->store('/public/img/avatars');
@@ -147,7 +148,7 @@ class UsuarioController extends Controller
             'avatar' => $fileName,
             'pais' => $request['pais'],
             'email' => $request['email']
-            ]);
+        ]);
 
         // $usuario->update();
 

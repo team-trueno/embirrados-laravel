@@ -94,7 +94,7 @@
                         <li class="list-group-item">Fecha Nacimiento: {{$usuario->fecha_nac}}</li>
                         <li class="list-group-item">País: {{$usuario->pais}}</li>
                 </ul>
-                    <a href="{{ route('usuarios.index') }}" class="btn btn-dark btn-sm">Atrás</a>
+                    {{-- <a href="{{ route('usuarios.index') }}" class="btn btn-dark btn-sm">Atrás</a> --}}
                 </div>
             </div>
 
@@ -108,7 +108,7 @@
                         <p>Usuario: {{$usuario->usuario}}</p>
                         <p>Fecha Nacimiento: {{$usuario->fecha_nac}}</p>
                         <p>País: {{$usuario->pais}}</p>
-                        <a href="{{ route('usuarios.index') }}" class="btn btn-dark btn-sm">Atrás</a>
+                        {{-- <a href="{{ route('usuarios.index') }}" class="btn btn-dark btn-sm">Atrás</a> --}}
                     </div>
                 </div>
             @endif
@@ -124,7 +124,7 @@
                         <p>Puntos: {{$usuario->jugador->puntos}}</p>
                         @endif
                         {{-- realizar una consulta de su posición en el ranking gral --}}
-                        <a href="{{ route('usuarios.index') }}" class="btn btn-dark btn-sm">Atrás</a>
+                        {{-- <a href="{{ route('usuarios.index') }}" class="btn btn-dark btn-sm">Atrás</a> --}}
                     </div>
                 </div>
             @endif

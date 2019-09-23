@@ -19,7 +19,7 @@ class FaqPreguntaController extends Controller
         abort_unless(Auth::check(), 401);
         auth()->user()->authorizeRoles(['admin', 'superadmin']);
         $topicos = FaqTopico::all();
-        $preguntas = FaqPregunta::orderBy('id','DESC')->paginate(5);
+        $preguntas = FaqPregunta::orderBy('id', 'DESC')->paginate(5);
         return view('faq.preguntas.index', compact('preguntas', 'topicos'));
     }
 
@@ -47,16 +47,16 @@ class FaqPreguntaController extends Controller
         abort_unless(Auth::check(), 401);
         auth()->user()->authorizeRoles(['admin', 'superadmin']);
         $reglas = [
-            'detalle'=>'required|string|min:1|max:100|unique:faq_preguntas,detalle',
-            'respuesta'=>'required|string|min:1|max:100',
-            'faq_topico_id'=>'required|string'
+            'detalle' => 'required|string|min:1|max:100|unique:faq_preguntas,detalle',
+            'respuesta' => 'required|string|min:1|max:100',
+            'faq_topico_id' => 'required|string'
         ];
 
         $mensajes = [
-            'string'=>'El campo :attribute debe ser un texto',
-            'min'=>'El campo :attribute debe tener un minimo de :min caracteres',
-            'max'=>'El campo :attribute debe tener un máximo de :max caracteres',
-            'unique'=>'Esta pregunta ya está registrada en la Base de Datos'
+            'string' => 'El campo :attribute debe ser un texto',
+            'min' => 'El campo :attribute debe tener un minimo de :min caracteres',
+            'max' => 'El campo :attribute debe tener un máximo de :max caracteres',
+            'unique' => 'Esta pregunta ya está registrada en la Base de Datos'
         ];
 
         $this->validate($request, $reglas, $mensajes);
@@ -103,15 +103,15 @@ class FaqPreguntaController extends Controller
         abort_unless(Auth::check(), 401);
         auth()->user()->authorizeRoles(['admin', 'superadmin']);
         $reglas = [
-            'detalle'=>'string|min:1|max:100',
-            'respuesta'=>'string|min:1|max:100',
-            'faq_topico_id'=>'string'
+            'detalle' => 'string|min:1|max:100',
+            'respuesta' => 'string|min:1|max:100',
+            'faq_topico_id' => 'string'
         ];
 
         $mensajes = [
-            'string'=>'El campo :attribute debe ser un texto',
-            'min'=>'El campo :attribute debe tener un minimo de :min caracteres',
-            'max'=>'El campo :attribute debe tener un máximo de :max caracteres'
+            'string' => 'El campo :attribute debe ser un texto',
+            'min' => 'El campo :attribute debe tener un minimo de :min caracteres',
+            'max' => 'El campo :attribute debe tener un máximo de :max caracteres'
         ];
 
         $this->validate($request, $reglas, $mensajes);

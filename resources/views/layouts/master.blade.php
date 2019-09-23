@@ -44,9 +44,10 @@
 
 </head>
 <body>
-<div id="app">
-        <nav class="navbar navbar-expand-md sticky-top navbar-dark bg-dark">
-            <div class="container">
+{{-- <div id="app" class="d-flex flex-column"> --}}
+    {{-- <header class="flex-column"> --}}
+        <nav class="bd-navbar navbar navbar-expand-md fixed-top navbar-dark bg-dark">
+            {{-- <div class="container"> --}}
                 <a class="navbar-brand" href="{{ url('/') }}">
                     <img class="img-fluid pb-1" src="{{ asset('embirrados-gris.svg') }}" width="30" height="30" alt="">
                     {{ config('app.name', 'Laravel') }}
@@ -122,9 +123,9 @@
                         @endguest
                     </ul>
                 </div>
-            </div>
+            {{-- </div> --}}
         </nav>
-
+    {{-- </header> --}}
         <main class="py-4">
             @yield('content')
         </main>
@@ -134,7 +135,7 @@
         {{-- <footer>
             @yield('footer')
         </footer> --}}
-    </div>
+    {{-- </div> --}}
 </body>
 
 </html>

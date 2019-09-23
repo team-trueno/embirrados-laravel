@@ -46,9 +46,5 @@ class Pregunta extends Model
         } else {
             $this->update(['activa' => false]);
         }
-
-
     }
-
-
 }

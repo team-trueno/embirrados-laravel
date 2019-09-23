@@ -1,4 +1,18 @@
+.bd-navbar {
+    min-height: 3.6rem;
+}
 
+body {
+    padding-top: 3.6rem;
+}
+
+.carousel-item {
+    height: 28rem;
+}
+
+/* main {
+    padding-top: 5rem;
+} */
 
 .card-border-color {
     border-top: 3px solid #c9c9c9;

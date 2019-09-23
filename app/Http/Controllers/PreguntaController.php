@@ -26,7 +26,7 @@ class PreguntaController extends Controller
     public function index()
     {
         auth()->user()->authorizeRoles(['admin', 'superadmin']);
-        $preguntas = Pregunta::orderBy('id','DESC')->paginate(15);
+        $preguntas = Pregunta::orderBy('id', 'DESC')->paginate(15);
         return view('preguntas.index', compact('preguntas'));
     }
 
@@ -53,15 +53,15 @@ class PreguntaController extends Controller
     {
         auth()->user()->authorizeRoles(['admin', 'superadmin']);
         $reglas = [
-            'detalle'=>'required|string|min:5|max:100|unique:preguntas,detalle',
-            'categoria_pregunta_id'=>'required|string|min:1|max:100'
+            'detalle' => 'required|string|min:5|max:100|unique:preguntas,detalle',
+            'categoria_pregunta_id' => 'required|string|min:1|max:100'
         ];
 
         $mensajes = [
-            'string'=>'El campo debe ser un texto',
-            'min'=>'El campo debe tener un minimo de :min caracteres',
-            'max'=>'El campo debe tener un máximo de :max caracteres',
-            'unique'=>'Esta pregunta ya está registrada en la Base de Datos'
+            'string' => 'El campo debe ser un texto',
+            'min' => 'El campo debe tener un minimo de :min caracteres',
+            'max' => 'El campo debe tener un máximo de :max caracteres',
+            'unique' => 'Esta pregunta ya está registrada en la Base de Datos'
         ];
 
         $this->validate($request, $reglas, $mensajes);
@@ -113,15 +113,15 @@ class PreguntaController extends Controller
     {
         auth()->user()->authorizeRoles(['admin', 'superadmin']);
         $reglas = [
-            'detalle'=>'required|string|min:5|max:100',
-            'categoria_pregunta_id'=>'required|string|min:1|max:100'
+            'detalle' => 'required|string|min:5|max:100',
+            'categoria_pregunta_id' => 'required|string|min:1|max:100'
         ];
 
         $mensajes = [
-            'string'=>'El campo debe ser un texto',
-            'min'=>'El campo debe tener un minimo de :min caracteres',
-            'max'=>'El campo debe tener un máximo de :max caracteres',
-            'unique'=>'Esta pregunta ya está registrada en la Base de Datos'
+            'string' => 'El campo debe ser un texto',
+            'min' => 'El campo debe tener un minimo de :min caracteres',
+            'max' => 'El campo debe tener un máximo de :max caracteres',
+            'unique' => 'Esta pregunta ya está registrada en la Base de Datos'
         ];
 
         $this->validate($request, $reglas, $mensajes);

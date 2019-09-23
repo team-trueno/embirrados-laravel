@@ -15,7 +15,7 @@ class ContactoController extends Controller
     public function index()
     {
         auth()->user()->authorizeRoles(['admin', 'superadmin']);
-        $contactos = Contacto::orderBy('id','DESC')->paginate(10);
+        $contactos = Contacto::orderBy('id', 'DESC')->paginate(10);
         return view('contactos.index', compact('contactos'));
     }
 
@@ -39,16 +39,16 @@ class ContactoController extends Controller
     public function store(Request $request)
     {
         $reglas = [
-            'nombre'=>'required|string|min:2',
-            'email'=>'required|string',
-            'asunto'=>'required|string|min:1',
-            'mensaje'=>'required|string|min:2'
+            'nombre' => 'required|string|min:2',
+            'email' => 'required|string',
+            'asunto' => 'required|string|min:1',
+            'mensaje' => 'required|string|min:2'
         ];
 
         $mensajes = [
-            'string'=>'El campo :attribute debe ser un texto',
-            'min'=>'El campo :attribute debe tener un minimo de :min',
-            'unique'=>'El campo :attribute se encuentra repetido'
+            'string' => 'El campo :attribute debe ser un texto',
+            'min' => 'El campo :attribute debe tener un minimo de :min',
+            'unique' => 'El campo :attribute se encuentra repetido'
         ];
 
         $this->validate($request, $reglas, $mensajes);
@@ -56,7 +56,6 @@ class ContactoController extends Controller
         Contacto::create($request->all());
 
         return redirect()->route('usuarios.show', auth()->user()->id);
-
     }
 
     /**
@@ -68,7 +67,7 @@ class ContactoController extends Controller
     public function show(Contacto $contacto)
     {
         auth()->user()->authorizeRoles(['admin', 'superadmin']);
-        return  view('contactos.show',compact('contacto'));
+        return  view('contactos.show', compact('contacto'));
     }
 
     /**

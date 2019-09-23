@@ -38,6 +38,18 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
+    /**
+     * Retrieve the model for a bound value.
+     *
+     * @param  mixed  $value
+     * @return \Illuminate\Database\Eloquent\Model|null
+     */
+    public function resolveRouteBinding($value)
+    {
+        return $this->where(function ($query) use ($value) {
+            return $query->where('id', $value)->orWhere('usuario', $value);
+        })->first() ?? abort(404);
+    }
 
     public function jugador()
     {
@@ -113,10 +125,9 @@ class User extends Authenticatable
 
     public function hasJugador()
     {
-        if($this->jugador()->first()) {
+        if ($this->jugador()->first()) {
             return true;
         }
         return false;
     }
-
 }

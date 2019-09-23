@@ -52,5 +52,4 @@ class Perfil extends Model
     {
         $this->update(['profile_type' => 'admin']);
     }
-
 }

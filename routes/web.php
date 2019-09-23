@@ -18,7 +18,7 @@ Route::get('/', function () {
 
 Auth::routes();
 
-Route::get('/home', 'HomeController@index')->name('home');
+// Route::get('/home', 'HomeController@index')->name('home');
 
 Route::resource('/usuarios', 'UsuarioController');
 
@@ -63,11 +63,7 @@ Route::get('/juego', function () {
 })->middleware('auth');
 
 
-Route::get('/faq', function() {
-    $topicos = \App\FaqTopico::all();
-    // dd($topicos);
-    return view('faq.index', compact('topicos'));
-});
+Route::get('faq', 'FaqController')->name('faq');
 
 
 Route::post('/usuario-activo/{usuario}', 'UserActivoController@store')->name('perfiles.store');
@@ -81,5 +77,10 @@ Route::get('/prejuego', 'JuegoController@preJuego')->name('prejuego');
 
 Route::get('/ranking', 'RankingController@index');
 
+Route::get('perfiles/{user}', 'PerfilController@show');
+
+/**
+ * Rutas especiales para controles específicos
+ */
 Route::post('/usuario-admin/{usuario}', 'UserAdminController@store')->name('admin.store');
 Route::delete('/usuario-admin/{usuario}', 'UserAdminController@destroy')->name('admin.destroy');

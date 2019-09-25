@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\User;
+use App\Role;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Hash;
 use PragmaRX\Countries\Package\Countries;
 
 class UsuarioController extends Controller
@@ -28,7 +31,8 @@ class UsuarioController extends Controller
      */
     public function create()
     {
-        //
+        $paises = Countries::all()->pluck('name.common');
+        return view('usuarios.create', compact('paises'));
     }
 
     /**
@@ -39,41 +43,64 @@ class UsuarioController extends Controller
      */
     public function store(Request $request)
     {
-        $reglas = [
-            'name' => ['string', 'max:255'],
-            'apellido' => ['string', 'max:255'],
-            'usuario' => ['string', 'max:255'],
-            'avatar' => ['image'],
-            'pais' => ['string', 'max:255'],
-            'email' => ['string', 'email', 'max:255']
-        ];
 
-        $mensajes = [
-            'string' => 'El campo :attribute debe ser un texto',
-            'min' => 'El campo :attribute debe tener un minimo de :min',
-            'max' => 'El campo :attribute debe tener un máximo de :max',
-            'numeric' => 'El campo :attribute debe ser un numero',
-            'integer' => 'El campo :attribute debe ser un número entero',
-            'unique' => 'Este e-mail ya existe'
-        ];
+        $validatedData = $request->validate([
+            'name' => 'required|string|max:255',
+            'apellido' => 'required|string|max:255',
+            'usuario' => 'required|string|max:50|unique:users',
+            'email' => 'required|string|email|max:255|unique:users',
+            'fecha_nac' => 'nullable|date|before:-18 years',
+            'options' => 'required|in:jugador,admin',
+        ]);
 
-        $route = $request['avatar']->store('/public/img/avatars');
 
-        $fileName = basename($route);
 
-        $this->validate($request, $reglas, $mensajes);
+        // $reglas = [
+        //     'name' => ['string', 'max:255'],
+        //     'apellido' => ['string', 'max:255'],
+        //     'usuario' => ['string', 'max:255'],
+        //     'avatar' => ['image'],
+        //     'pais' => ['string', 'max:255'],
+        //     'email' => ['string', 'email', 'max:255']
+        // ];
 
-        $usuario = new User();
+        // $mensajes = [
+        //     'string' => 'El campo :attribute debe ser un texto',
+        //     'min' => 'El campo :attribute debe tener un minimo de :min',
+        //     'max' => 'El campo :attribute debe tener un máximo de :max',
+        //     'numeric' => 'El campo :attribute debe ser un numero',
+        //     'integer' => 'El campo :attribute debe ser un número entero',
+        //     'unique' => 'Este e-mail ya existe'
+        // ];
 
-        $usuario->name = $request->name;
-        $usuario->apellido = $request->apellido;
-        $usuario->usuario = $request->usuario;
-        $usuario->avatar = $fileName;
-        $usuario->pais = $request->pais;
-        $usuario->email = $request->email;
+        // $route = $request['avatar']->store('/public/img/avatars');
 
-        $usuario->save();
+        // $fileName = basename($route);
 
+        // $this->validate($request, $reglas, $mensajes);
+
+
+        $usuario = User::create([
+            'name' => Str::title($validatedData['name']),
+            'apellido' => Str::title($validatedData['apellido']),
+            'usuario' => $validatedData['usuario'],
+            'fecha_nac' => $validatedData['fecha_nac'],
+            'email' => $validatedData['email'],
+            'password' => Hash::make('password'),
+        ]);
+
+        $usuario->jugador()->create();
+        $usuario->perfil()->create([
+            'profile_type' => $validatedData['options'],
+        ]);
+
+        $usuario->roles()->attach(Role::where('name', 'user')->first());
+
+        if ($validatedData['options'] === 'admin') {
+            $usuario->roles()->attach(Role::where('name', 'admin')->first());
+        }
+
+        //return (dd($usuario));
         return redirect()->route('usuarios.index');
     }
 

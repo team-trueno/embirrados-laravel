@@ -48,7 +48,7 @@ class PerfilController extends Controller
     public function show(User $user)
     {
         //return dd($user);
-        return view('usuarios.show', [
+        return view('perfiles.show', [
             'usuario' => $user,
         ]);
     }

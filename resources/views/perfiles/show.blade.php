@@ -24,7 +24,9 @@
                         </div>
                         <ul class="list-group list-group-flush">
                             <li class="list-group-item text-center">
-                                @if ($usuario->hasJugador())
+                                @if($usuario->hasRole('superadmin'))
+                                <span class="btn btn-dark btn-lg">SUPERADMIN</span>
+                                @else
                                 <span class="btn btn-dark btn-lg">{{ $usuario->jugador->nivel->nombre }}</span>
                                 <span class="btn btn-secondary btn-lg">Puntos <span class="badge badge-light">{{ $usuario->jugador->puntos }}</span></span>
                                 @endif
@@ -77,18 +79,26 @@
                 <div class="card mb-4">
                     <div class="card-header"><h3>Acciones</h3></div>
                     <div class="card-body">
-                            @if ($usuario->hasJugador())
-                                <p class="lead text-center">
-                                    <a class="btn btn-warning btn-lg align-items-center" href="/juego" role="button">¡Jugar ahora!</a>
-                                    <a class="btn btn-success btn-lg align-items-center" href="/ranking" role="button">Ver ranking</a>
-                                    <a class="btn btn-danger btn-lg align-items-center" href="#" role="button">Desactivar mi perfil</a>
-                                </p>
+                            @if ($usuario->hasRole('admin') && $usuario->hasJugador())
+                            <p class="lead text-center">
+                                <a class="btn btn-success btn-lg align-items-center" href="#" role="button">Ir al Dashboard</a>
+                                <a class="btn btn-warning btn-lg align-items-center" href="/juego" role="button">¡Jugar ahora!</a>
+                                
+                            </p>
+
+                            @elseif($usuario->hasRole('admin') || $usuario->hasRole('superadmin'))
+                            <p class="lead text-center">
+                                <a class="btn btn-success btn-lg align-items-center" href="#" role="button">Ir al Dashboard</a>
+                                <button class="btn btn-warning btn-lg align-items-center" disabled="disabled">¡Jugar ahora!</button>
+                            </p>
                             
                             @else
-                                <p class="lead text-center">
-                                    <a class="btn btn-danger btn-lg align-items-center" href="#" role="button">Administrar usuarios</a>
-                                    <button class="btn btn-warning btn-lg align-items-center" disabled="disabled">¡Jugar ahora!</button>
-                                </p>
+                            <p class="lead text-center">
+                                <a class="btn btn-warning btn-lg align-items-center" href="/juego" role="button">¡Jugar ahora!</a>
+                                <a class="btn btn-success btn-lg align-items-center" href="/ranking" role="button">Ver ranking</a>
+                                <a class="btn btn-danger btn-lg align-items-center" href="#" role="button">Desactivar mi perfil</a>
+                            </p>
+                                
                             @endif
                     </div>
                 </div>

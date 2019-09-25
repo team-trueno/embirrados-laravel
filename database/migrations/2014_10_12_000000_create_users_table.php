@@ -20,7 +20,7 @@ class CreateUsersTable extends Migration
             $table->string('usuario');
             $table->string('avatar')->nullable()->default('default.png');
             $table->date('fecha_nac')->nullable();
-            $table->string('pais');
+            $table->string('pais')->nullable();
             $table->boolean('activo')->default(true);
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();

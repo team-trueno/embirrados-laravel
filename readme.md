@@ -1,11 +1,8 @@
-<!--
     ______ __  ___ ____   ____ ____   ____   ___     ____   ____  _____
    / ____//  |/  // __ ) /  _// __ \ / __ \ /   |   / __ \ / __ \/ ___/
   / __/  / /|_/ // __  | / / / /_/ // /_/ // /| |  / / / // / / /\__ \ 
  / /___ / /  / // /_/ /_/ / / _, _// _, _// ___ | / /_/ // /_/ /___/ / 
 /_____//_/  /_//_____//___//_/ |_|/_/ |_|/_/  |_|/_____/ \____//____/
-
--->
 
 ## Proyecto
 Desarrollamos un juego de preguntas y respuestas cuya temática y sistema de premios están pensados para adaptarse a los bares, pubs y locales gastronómicos que soliciten el juego.
@@ -22,6 +19,6 @@ Los participantes obtendrán 1 punto por cada respuesta correcta, conforme avanc
 - Ejecutar __php artisan migrate --seed__
 
 ## Team Trueno®
-Darío Marañes
-Luis Fernández Blanco
-Santiago Facchini
+- Darío Marañes
+- Luis Fernández Blanco
+- Santiago Facchini

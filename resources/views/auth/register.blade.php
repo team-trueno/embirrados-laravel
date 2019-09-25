@@ -140,11 +140,17 @@
                         <div class="form-group row">
                                 <div class="col-12 col-sm-9 offset-sm-3">
                                     <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" name="acepto" id="acepto" {{ old('acepto') ? 'checked' : '' }}>
+                                        <input class="form-check-input @error('acepto') is-invalid @enderror" type="checkbox" name="acepto" id="acepto" {{ old('acepto') ? 'checked' : '' }}>
 
                                         <label class="form-check-label" for="acepto">
                                             {{ __('Acepto términos y condiciones') }}
                                         </label>
+
+                                        @error('acepto')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
                                     </div>
                                 </div>
                             </div>

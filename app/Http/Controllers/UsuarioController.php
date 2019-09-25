@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\User;
 use App\Role;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
@@ -30,7 +31,44 @@ class UsuarioController extends Controller
     {
         auth()->user()->authorizeRoles(['admin', 'superadmin']);
 
-        $usuarios = User::paginate(10);
+        // $usuarios = User::paginate(10);
+        // $usuarios = User::with('perfil')->paginate(10);
+        // $usuarios = User::has('perfil', 'like', 'jugador')->paginate(10);
+
+        // $value = [
+        //     'jugador',
+        //     'admin',
+        //     'superadmin',
+        // ];
+
+        // $sortBy = null;
+        $role = auth()->user()->hasRole('superadmin');
+
+        // $roles = auth()->user()->roles;
+        // $userLog = auth()->user();
+        // dd($roles);
+        // $sortBy = 'apellido';
+
+        // $usuarios = User::whereHas('perfil', function (Builder $query) use ($value) {
+        //     $query->whereIn('profile_type', $value);
+        // })->paginate(10);
+
+        $usuarios = User::whereHas('perfil', function (Builder $query) use ($role) {
+            $query->where('profile_type', 'jugador')
+                ->orWhere('profile_type', 'admin')
+                ->when($role, function ($query) {
+                    return $query->orWhere('profile_type', 'superadmin');
+                });
+        })
+
+        // ->when($sortBy, function ($query, $sortBy) {
+        //     return $query->orderBy($sortBy);
+        // }, function ($query) {
+        //     return $query->orderBy('name');
+        // })
+
+            ->paginate(10);
+
         // $usuarios = User::paginate(10);
         return view('usuarios.index', compact('usuarios'));
     }

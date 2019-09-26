@@ -70,6 +70,15 @@ class UsuarioController extends Controller
     public function store(Request $request)
     {
 
+        $mensajes = [
+            'required' => 'El campo :attribute es obligatorio',
+            'string' => 'El campo :attribute debe ser un texto',
+            'max' => 'El campo :attribute debe tener un máximo de :max',
+            'email' => 'Ingrese un :attribute en formato correcto',
+            'unique' => 'El :attribute ya está tomado.',
+            'before' => 'Debe ser mayor de edad',
+        ];
+
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
             'apellido' => 'required|string|max:255',
@@ -77,7 +86,8 @@ class UsuarioController extends Controller
             'email' => 'required|string|email|max:255|unique:users',
             'fecha_nac' => 'nullable|date|before:-18 years',
             'options' => 'required|in:jugador,admin',
-        ]);
+        ], $mensajes);
+
 
 
 
@@ -171,10 +181,11 @@ class UsuarioController extends Controller
         $reglas = [
             'name' => ['string', 'max:255'],
             'apellido' => ['string', 'max:255'],
-            'usuario' => ['string', 'max:255'],
-            'avatar' => ['image'],
+            'usuario' => ['string', 'max:255', 'unique:users,usuario,'.$usuario->id],
+            'avatar' => ['sometimes', 'image'],
             'pais' => ['string', 'max:255'],
-            'email' => ['string', 'email', 'max:255']
+            'fecha_nac' => 'required|date|before:-18 years',
+            'email' => ['string', 'email', 'max:255', 'unique:users,email,'.$usuario->id],
         ];
 
         $mensajes = [
@@ -182,12 +193,19 @@ class UsuarioController extends Controller
             'min' => 'El campo :attribute debe tener un minimo de :min',
             'max' => 'El campo :attribute debe tener un máximo de :max',
             'numeric' => 'El campo :attribute debe ser un numero',
-            'integer' => 'El campo :attribute debe ser un número entero'
+            'integer' => 'El campo :attribute debe ser un número entero',
+            'unique' => 'El :attribute ya está tomado.',
+            'before' => 'Debe ser mayor de edad',
         ];
 
-        $route = $request['avatar']->store('/public/img/avatars');
+        if ($request['avatar']) {
+            # code...
+            $route = $request['avatar']->store('/public/img/avatars');
+            $fileName = basename($route);
+        } else {
+            $fileName = $usuario->avatar;
+        }
 
-        $fileName = basename($route);
 
         $this->validate($request, $reglas, $mensajes);
 
@@ -199,6 +217,7 @@ class UsuarioController extends Controller
             'apellido' => $request['apellido'],
             'usuario' => $request['usuario'],
             'avatar' => $fileName,
+            'fecha_nac' => $request['fecha_nac'],
             'pais' => $request['pais'],
             'email' => $request['email']
         ]);

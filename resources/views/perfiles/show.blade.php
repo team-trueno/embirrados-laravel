@@ -42,7 +42,7 @@
                     </ul>
                     @if (auth()->check() && (auth()->user()->id === $usuario->id))
                         <div class="card-body">
-                            <a class="btn btn-info" href="{{ route('usuarios.edit', $usuario->id) }}">Modificar mis datos</a>    
+                            <a class="btn btn-info" href="{{ action('PerfilController@edit', $usuario->id) }}">Modificar mis datos</a>    
                         </div>
                     @endif
                 </div>

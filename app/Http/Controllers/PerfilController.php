@@ -59,9 +59,11 @@ class PerfilController extends Controller
      * @param  \App\Perfil  $perfil
      * @return \Illuminate\Http\Response
      */
-    public function edit(Perfil $perfil)
+    public function edit(User $user)
     {
-        //
+        return view('perfiles.edit', [
+            'usuario' => $user,
+        ]);
     }
 
     /**
@@ -71,9 +73,40 @@ class PerfilController extends Controller
      * @param  \App\Perfil  $perfil
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Perfil $perfil)
+    public function update(Request $request, User $user)
     {
-        //
+        $reglas = [
+            'name' => ['string', 'max:255'],
+            'apellido' => ['string', 'max:255'],
+            'usuario' => ['sometimes'|'required'|'string', 'max:255'|'unique:users'],
+            'email' => ['sometimes'|'required'|'string'|'email'|'max:255'|'unique:users'],
+            'fecha_nac' => ['nullable'|'date'|'before:-18 years']
+        ];
+
+        $mensajes = [
+            'string' => 'El campo :attribute debe ser un texto',
+            'min' => 'El campo :attribute debe tener un minimo de :min',
+            'max' => 'El campo :attribute debe tener un máximo de :max',
+            'numeric' => 'El campo :attribute debe ser un numero',
+            'integer' => 'El campo :attribute debe ser un número entero'
+        ];
+
+        $route = $request['avatar']->store('/public/img/avatars');
+
+        $fileName = basename($route);
+
+        $this->validate($request, $reglas, $mensajes);
+
+        $user->update([
+            'name' => $request['name'],
+            'apellido' => $request['apellido'],
+            'usuario' => $request['usuario'],
+            'email' => $request['email'],
+            'fecha_nac' => $request['fecha_nac']
+        ]);
+
+        // redirigir hacia el perfil del usuario
+        return redirect()->route('perfiles.show', auth()->user()->id);
     }
 
     /**

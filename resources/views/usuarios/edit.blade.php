@@ -88,7 +88,7 @@
                             <label for="avatar" class="col-12 col-sm-3 col-form-label text-sm-right">{{ __('Avatar') }}</label>
 
                             <div class="col-12 col-sm-9 col-lg-9">
-                            <input id="avatar" type="file" class="form-control-file @error('avatar') is-invalid @enderror" name="avatar" value="{{ asset('storage/img/avatars/'.$usuario->avatar) }}" required>
+                            <input id="avatar" type="file" class="form-control-file @error('avatar') is-invalid @enderror" name="avatar" value="{{ asset('storage/img/avatars/'.$usuario->avatar) }}">
 
                                 @error('avatar')
                                     <span class="invalid-feedback" role="alert">
@@ -121,8 +121,9 @@
 
                             <div class="col-12 col-sm-9 col-lg-9">
                                 <select id="pais" class="form-control @error('pais') is-invalid @enderror" name="pais" required>
+                                    <option value="" disabled selected hidden>Seleccione...</option>
                                     @foreach ($paises as $pais)
-                                    <option value="{{ $usuario->pais }}" {{ $pais == $usuario->pais ? "selected" : "" }}>
+                                    <option value="{{ $pais }}" {{ $pais == $usuario->pais ? "selected" : "" }}>
                                         {{ $pais }}
                                     </option>
                                     @endforeach

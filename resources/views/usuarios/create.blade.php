@@ -103,6 +103,7 @@
                         <div class="col-12 col-sm-9 col-lg-9">
                             <select id="pais" class="form-control @error('pais') is-invalid @enderror" name="pais"
                                 {{-- required --}}>
+                                <option value="" disabled selected hidden>Seleccione...</option>
                                 @foreach ($paises as $pais)
                                 <option value="{{ old('pais') }}" {{ $pais == old('pais') ? "selected" : "" }}>
                                     {{ $pais }}
@@ -121,10 +122,10 @@
                     <div class="form-group row">
                         <label for="options" class="col-12 col-sm-3 col-form-label text-sm-right">{{ __('Tipo perfil') }}</label>
                         <div class="col-12 col-sm-9 col-lg-9 btn-group-toggle" data-toggle="buttons">
-                            <label class="btn btn-outline-secondary active">
+                            <label class="btn btn-outline-secondary active mb-1 mb-sm-0 mr-sm-1 m d-block d-sm-inline-block">
                                 <input type="radio" name="options" id="option1" autocomplete="off" value="jugador" checked> Jugador
                             </label>
-                            <label class="btn btn-outline-secondary">
+                            <label class="btn btn-outline-danger d-block d-sm-inline-block">
                                 <input type="radio" name="options" id="option2" autocomplete="off" value="admin"> Admin
                             </label>
                             @error('options')

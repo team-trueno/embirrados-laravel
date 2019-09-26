@@ -1,11 +1,17 @@
 @extends('layouts.master')
 @section('content')
 <div class="container">
-    <div class="row justify-content-center">
+    <div class="row mb-4 justify-content-center">
 
+        @if (auth()->check() && (auth()->user()->id === $usuario->id))
+            
         <div class="col-12 col-md-8">
-            <div class="card mb-4">
-            <div class="card-header"><h3>{{$usuario->name}} {{$usuario->apellido}}</h3></div>
+
+            @component('components.card')
+                @slot('header')
+                {{ $usuario->usuario }}
+                @endslot
+
                 <div class="card-body">
                         <img src="{{ asset('storage/img/avatars/'.$usuario->avatar) }}" class="card-img-top">
                         <div class="card-body text-center">
@@ -30,54 +36,23 @@
                                 <span class="btn btn-dark btn-lg">{{ $usuario->jugador->nivel->nombre }}</span>
                                 <span class="btn btn-secondary btn-lg">Puntos <span class="badge badge-light">{{ $usuario->jugador->puntos }}</span></span>
                                 @endif
-        
+                                
                             </li>
+                            <li class="list-group-item">{{ $usuario->name }} {{$usuario->apellido}}</li>
                             <li class="list-group-item">{{ $usuario->email }}</li>
-                            <li class="list-group-item">{{ $usuario->usuario }}</li>
                             <li class="list-group-item">{{ $usuario->pais }}</li>
                         </ul>
                         <div class="card-body">
-                            <a class="btn btn-warning" href="{{ route('usuarios.edit', $usuario->id) }}"><i class="fas fa-edit d-lg-none"></i><span class="d-none d-lg-block">Editar</span></a>
-                            @if ($usuario->activo)
-                            <form id="form" class="d-inline" action="{{ route('perfiles.destroy', $usuario->id) }}" method="POST">
-                                @csrf
-                                @method('DELETE')
-        
-                                <button class="btn btn-danger" type="submit"><i class="fas fa-trash-alt d-lg-none"></i><span class="d-none d-lg-block">Desactivar</span></button>
-                            </form>
-                            @else
-                            <form class="d-inline" action="{{ route('perfiles.store', $usuario->id) }}" method="POST">
-                                @csrf
-        
-                                <button class="btn btn-success" type="submit"><i class="fas fa-trash-alt d-lg-none"></i><span class="d-none d-lg-block">Activar</span></button>
-                            </form>
-                            @endif
-                            @if (auth()->user()->hasRole('superadmin'))
-        
-        
-                            @if ($usuario->hasRole('admin'))
-                            <form id="form" class="d-inline" action="{{ route('admin.destroy', $usuario->id) }}" method="POST">
-                                @csrf
-                                @method('DELETE')
-        
-                                <button class="btn btn-danger" type="submit"><i class="fas fa-trash-alt d-lg-none"></i><span class="d-none d-lg-block">DesAdmin</span></button>
-                            </form>
-                            @else
-                            <form class="d-inline" action="{{ route('admin.store', $usuario->id) }}" method="POST">
-                                @csrf
-        
-                                <button class="btn btn-success" type="submit"><i class="fas fa-trash-alt d-lg-none"></i><span class="d-none d-lg-block">Adminear</span></button>
-                            </form>
-                            @endif
-                            @endif
-        
+                            <a class="btn btn-info" href="{{ route('usuarios.edit', $usuario->id) }}">Modificar mis datos</a>    
                         </div>
                 </div>
-            </div>
+                @endcomponent
 
             @if ($usuario->hasRole('user'))
-                <div class="card mb-4">
-                    <div class="card-header"><h3>Acciones</h3></div>
+                @component('components.card')
+                    @slot('header')
+                        Acciones
+                    @endslot
                     <div class="card-body">
                             @if ($usuario->hasRole('admin') && $usuario->hasJugador())
                             <p class="lead text-center">
@@ -94,16 +69,61 @@
                             
                             @else
                             <p class="lead text-center">
-                                <a class="btn btn-warning btn-lg align-items-center" href="/juego" role="button">¡Jugar ahora!</a>
-                                <a class="btn btn-success btn-lg align-items-center" href="/ranking" role="button">Ver ranking</a>
-                                <a class="btn btn-danger btn-lg align-items-center" href="#" role="button">Desactivar mi perfil</a>
+                                <a class="btn btn-warning btn-lg align-items-center" href="/juego" role="button"><i class="fas fa-gamepad d-lg-none"></i><span class="d-none d-lg-block">¡Jugar ahora!</span></a>
+                                <a class="btn btn-success btn-lg align-items-center" href="/ranking" role="button"><i class="fas fa-list-ol d-lg-none"></i><span class="d-none d-lg-block">Ver ranking</span></a>
+                                <a class="btn btn-danger btn-lg align-items-center" href="#" role="button"><i class="fas fa-user-slash d-lg-none"></i><span class="d-none d-lg-block">Desactivar mi perfil</span></a>
                             </p>
                                 
                             @endif
                     </div>
-                </div>
+                @endcomponent
             @endif
+
+
+        @elseif(auth()->check() || (auth()->user()->id =! $usuario->id))
+
+        <div class="col-12 col-md-8">
+
+                @component('components.card')
+                    @slot('header')
+                        {{ $usuario->usuario }}
+                    @endslot
+                    <div class="card-body">
+                            <img src="{{ asset('storage/img/avatars/'.$usuario->avatar) }}" class="card-img-top">
+                            <div class="card-body text-center">
+                                @if ($usuario->hasRole('admin'))
+                                    <span class="btn btn-danger btn-sm text-uppercase">Admin</span>
+                                @else
+                                    <span class="btn btn-warning btn-sm text-uppercase">Jugador</span>
+                                @endif
+            
+                                @if ($usuario->activo)
+                                    <span class="btn btn-success btn-sm text-uppercase">Activo</span>
+                                @else
+                                    <span class="btn btn-danger btn-sm text-uppercase">Inactivo</span>
+                                @endif            
+                            </div>
+
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item text-center">
+                                    @if($usuario->hasRole('superadmin'))
+                                    <span class="btn btn-dark btn-lg">SUPERADMIN</span>
+                                    @else
+                                    <span class="btn btn-dark btn-lg">{{ $usuario->jugador->nivel->nombre }}</span>
+                                    <span class="btn btn-secondary btn-lg">Puntos <span class="badge badge-light">{{ $usuario->jugador->puntos }}</span></span>
+                                    @endif                                    
+                                </li>
+                                <li class="list-group-item">{{$usuario->name}} {{$usuario->apellido}}</li>
+                                <li class="list-group-item">{{ $usuario->email }}</li>
+                                <li class="list-group-item">{{ $usuario->pais }}</li>
+                            </ul>
+                    </div>
+                @endcomponent
         </div>
+                
+        </div>
+
+        @endif
 
     </div>
 </div>

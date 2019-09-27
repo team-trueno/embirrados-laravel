@@ -78,9 +78,9 @@ class PerfilController extends Controller
         $reglas = [
             'name' => ['string', 'max:255'],
             'apellido' => ['string', 'max:255'],
-            'usuario' => ['sometimes'|'required'|'string', 'max:255'|'unique:users'],
-            'email' => ['sometimes'|'required'|'string'|'email'|'max:255'|'unique:users'],
-            'fecha_nac' => ['nullable'|'date'|'before:-18 years']
+            'usuario' => ['sometimes','required','string', 'max:255'],
+            'email' => ['sometimes','required','string','email','max:255'],
+            'fecha_nac' => ['nullable','date','before:-18 years']
         ];
 
         $mensajes = [
@@ -90,10 +90,6 @@ class PerfilController extends Controller
             'numeric' => 'El campo :attribute debe ser un numero',
             'integer' => 'El campo :attribute debe ser un número entero'
         ];
-
-        $route = $request['avatar']->store('/public/img/avatars');
-
-        $fileName = basename($route);
 
         $this->validate($request, $reglas, $mensajes);
 

@@ -86,7 +86,7 @@
                             @endif
                         @else
                             <li class="nav-item">
-                                <a class="nav-link" href="{{ route('usuarios.show', auth()->user()->id) }}">{{ __('Perfil') }}</a>
+                                <a class="nav-link" href="{{ action('PerfilController@show', auth()->user()->id) }}">{{ __('Perfil') }}</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" href="/ranking">{{ __('Ranking') }}</a>

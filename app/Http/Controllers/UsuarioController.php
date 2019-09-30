@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\User;
 use App\Role;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
@@ -11,6 +12,16 @@ use PragmaRX\Countries\Package\Countries;
 
 class UsuarioController extends Controller
 {
+    /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -20,8 +31,23 @@ class UsuarioController extends Controller
     {
         auth()->user()->authorizeRoles(['admin', 'superadmin']);
 
-        $usuarios = User::paginate(10);
-        // $usuarios = User::paginate(10);
+        $sortBy = null;
+        $role = auth()->user()->hasRole('superadmin');
+
+        $usuarios = User::whereHas('perfil', function (Builder $query) use ($role) {
+            $query->where('profile_type', 'jugador')
+                ->orWhere('profile_type', 'admin')
+                ->when($role, function ($query) {
+                    return $query->orWhere('profile_type', 'superadmin');
+                });
+            })
+            ->when($sortBy, function ($query, $sortBy) {
+                return $query->orderBy($sortBy);
+            }, function ($query) {
+                return $query->orderBy('name');
+            })
+            ->paginate(10);
+
         return view('usuarios.index', compact('usuarios'));
     }
     /**
@@ -31,6 +57,8 @@ class UsuarioController extends Controller
      */
     public function create()
     {
+        auth()->user()->authorizeRoles(['admin', 'superadmin']);
+
         $paises = Countries::all()->pluck('name.common');
         return view('usuarios.create', compact('paises'));
     }
@@ -43,6 +71,16 @@ class UsuarioController extends Controller
      */
     public function store(Request $request)
     {
+        auth()->user()->authorizeRoles(['admin', 'superadmin']);
+
+        $mensajes = [
+            'required' => 'El campo :attribute es obligatorio',
+            'string' => 'El campo :attribute debe ser un texto',
+            'max' => 'El campo :attribute debe tener un máximo de :max',
+            'email' => 'Ingrese un :attribute en formato correcto',
+            'unique' => 'El :attribute ya está tomado.',
+            'before' => 'Debe ser mayor de edad',
+        ];
 
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
@@ -51,7 +89,8 @@ class UsuarioController extends Controller
             'email' => 'required|string|email|max:255|unique:users',
             'fecha_nac' => 'nullable|date|before:-18 years',
             'options' => 'required|in:jugador,admin',
-        ]);
+        ], $mensajes);
+
 
 
 
@@ -112,6 +151,7 @@ class UsuarioController extends Controller
      */
     public function show(User $usuario)
     {
+        auth()->user()->authorizeRoles(['admin', 'superadmin']);
 
         // abort_unless(auth()->user()->id == $usuario->id, 403);
         //$userParam = 'admin';
@@ -126,6 +166,7 @@ class UsuarioController extends Controller
      */
     public function edit(User $usuario)
     {
+        auth()->user()->authorizeRoles(['admin', 'superadmin']);
         //$paises = Countries::all();
 
         $paises = Countries::all()->pluck('name.common');
@@ -142,13 +183,16 @@ class UsuarioController extends Controller
      */
     public function update(Request $request, User $usuario)
     {
+        auth()->user()->authorizeRoles(['admin', 'superadmin']);
+
         $reglas = [
             'name' => ['string', 'max:255'],
             'apellido' => ['string', 'max:255'],
-            'usuario' => ['string', 'max:255'],
-            'avatar' => ['image'],
+            'usuario' => ['string', 'max:255', 'unique:users,usuario,'.$usuario->id],
+            'avatar' => ['sometimes', 'image'],
             'pais' => ['string', 'max:255'],
-            'email' => ['string', 'email', 'max:255']
+            'fecha_nac' => 'required|date|before:-18 years',
+            'email' => ['string', 'email', 'max:255', 'unique:users,email,'.$usuario->id],
         ];
 
         $mensajes = [
@@ -156,12 +200,19 @@ class UsuarioController extends Controller
             'min' => 'El campo :attribute debe tener un minimo de :min',
             'max' => 'El campo :attribute debe tener un máximo de :max',
             'numeric' => 'El campo :attribute debe ser un numero',
-            'integer' => 'El campo :attribute debe ser un número entero'
+            'integer' => 'El campo :attribute debe ser un número entero',
+            'unique' => 'El :attribute ya está tomado.',
+            'before' => 'Debe ser mayor de edad',
         ];
 
-        $route = $request['avatar']->store('/public/img/avatars');
+        if ($request['avatar']) {
+            # code...
+            $route = $request['avatar']->store('/public/img/avatars');
+            $fileName = basename($route);
+        } else {
+            $fileName = $usuario->avatar;
+        }
 
-        $fileName = basename($route);
 
         $this->validate($request, $reglas, $mensajes);
 
@@ -173,6 +224,7 @@ class UsuarioController extends Controller
             'apellido' => $request['apellido'],
             'usuario' => $request['usuario'],
             'avatar' => $fileName,
+            'fecha_nac' => $request['fecha_nac'],
             'pais' => $request['pais'],
             'email' => $request['email']
         ]);

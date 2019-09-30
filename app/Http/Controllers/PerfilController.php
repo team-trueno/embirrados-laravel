@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Perfil;
 use App\User;
+use PragmaRX\Countries\Package\Countries;
 use Illuminate\Http\Request;
 
 class PerfilController extends Controller
@@ -73,8 +74,11 @@ class PerfilController extends Controller
     {
         abort_unless(auth()->user()->id == $user->id, 403);
 
+        $paises = Countries::all()->pluck('name.common');
+
         return view('perfiles.edit', [
             'usuario' => $user,
+            'paises' => $paises,
         ]);
     }
 
@@ -87,12 +91,16 @@ class PerfilController extends Controller
      */
     public function update(Request $request, User $user)
     {
+        abort_unless(auth()->user()->id == $user->id, 403);
+
         $reglas = [
             'name' => ['string', 'max:255'],
             'apellido' => ['string', 'max:255'],
-            'usuario' => ['sometimes','required','string', 'max:255'],
-            'email' => ['sometimes','required','string','email','max:255'],
-            'fecha_nac' => ['nullable','date','before:-18 years']
+            'usuario' => ['string', 'max:255', 'unique:users,usuario,'.$user->id],
+            'avatar' => ['sometimes', 'image'],
+            'pais' => ['string', 'max:255'],
+            'fecha_nac' => 'required|date|before:-18 years',
+            'email' => ['string', 'email', 'max:255', 'unique:users,email,'.$user->id],
         ];
 
         $mensajes = [
@@ -100,19 +108,33 @@ class PerfilController extends Controller
             'min' => 'El campo :attribute debe tener un minimo de :min',
             'max' => 'El campo :attribute debe tener un máximo de :max',
             'numeric' => 'El campo :attribute debe ser un numero',
-            'integer' => 'El campo :attribute debe ser un número entero'
+            'integer' => 'El campo :attribute debe ser un número entero',
+            'unique' => 'El :attribute ya está tomado.',
+            'before' => 'Debe ser mayor de edad',
         ];
 
-        abort_unless(auth()->user()->id == $user->id, 403);
+        if ($request['avatar']) {
+            # code...
+            $route = $request['avatar']->store('/public/img/avatars');
+            $fileName = basename($route);
+        } else {
+            $fileName = $user->avatar;
+        }
+
 
         $this->validate($request, $reglas, $mensajes);
 
+        /**
+         * Ver de pasar al otro formato de UPDATE
+         */
         $user->update([
             'name' => $request['name'],
             'apellido' => $request['apellido'],
             'usuario' => $request['usuario'],
-            'email' => $request['email'],
-            'fecha_nac' => $request['fecha_nac']
+            'avatar' => $fileName,
+            'fecha_nac' => $request['fecha_nac'],
+            'pais' => $request['pais'],
+            'email' => $request['email']
         ]);
 
         return redirect()->action('PerfilController@show', $user->id);

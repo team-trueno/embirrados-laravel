@@ -9,6 +9,16 @@ use Illuminate\Http\Request;
 class PerfilController extends Controller
 {
     /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware ('auth')->except(['show']);
+    }
+
+    /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
@@ -61,6 +71,8 @@ class PerfilController extends Controller
      */
     public function edit(User $user)
     {
+        abort_unless(auth()->user()->id == $user->id, 403);
+
         return view('perfiles.edit', [
             'usuario' => $user,
         ]);
@@ -91,6 +103,8 @@ class PerfilController extends Controller
             'integer' => 'El campo :attribute debe ser un número entero'
         ];
 
+        abort_unless(auth()->user()->id == $user->id, 403);
+
         $this->validate($request, $reglas, $mensajes);
 
         $user->update([
@@ -101,8 +115,7 @@ class PerfilController extends Controller
             'fecha_nac' => $request['fecha_nac']
         ]);
 
-        // redirigir hacia el perfil del usuario
-        return redirect()->route('perfiles.show', auth()->user()->id);
+        return redirect()->action('PerfilController@show', $user->id);
     }
 
     /**

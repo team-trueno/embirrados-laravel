@@ -11,7 +11,7 @@
                 @endslot
 
                 <div class="card-body text-center">
-                    <img src="{{ asset('storage/img/avatars/'.$usuario->avatar) }}" class="card-img-top">
+                    <img id="img-estilo" src="{{ asset('storage/img/avatars/'.$usuario->avatar) }}" class="card-img-top">
                     <div class="card-body text-center">
                         @if ($usuario->hasRole('admin'))
                             <span class="btn btn-danger btn-sm text-uppercase">Admin</span>

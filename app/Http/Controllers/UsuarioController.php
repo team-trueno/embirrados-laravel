@@ -57,6 +57,8 @@ class UsuarioController extends Controller
      */
     public function create()
     {
+        auth()->user()->authorizeRoles(['admin', 'superadmin']);
+
         $paises = Countries::all()->pluck('name.common');
         return view('usuarios.create', compact('paises'));
     }
@@ -69,6 +71,7 @@ class UsuarioController extends Controller
      */
     public function store(Request $request)
     {
+        auth()->user()->authorizeRoles(['admin', 'superadmin']);
 
         $mensajes = [
             'required' => 'El campo :attribute es obligatorio',
@@ -148,6 +151,7 @@ class UsuarioController extends Controller
      */
     public function show(User $usuario)
     {
+        auth()->user()->authorizeRoles(['admin', 'superadmin']);
 
         // abort_unless(auth()->user()->id == $usuario->id, 403);
         //$userParam = 'admin';
@@ -162,6 +166,7 @@ class UsuarioController extends Controller
      */
     public function edit(User $usuario)
     {
+        auth()->user()->authorizeRoles(['admin', 'superadmin']);
         //$paises = Countries::all();
 
         $paises = Countries::all()->pluck('name.common');
@@ -178,6 +183,8 @@ class UsuarioController extends Controller
      */
     public function update(Request $request, User $usuario)
     {
+        auth()->user()->authorizeRoles(['admin', 'superadmin']);
+
         $reglas = [
             'name' => ['string', 'max:255'],
             'apellido' => ['string', 'max:255'],

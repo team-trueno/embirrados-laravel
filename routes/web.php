@@ -79,6 +79,10 @@ Route::get('/ranking', 'RankingController@index');
 
 Route::get('perfiles/{user}', 'PerfilController@show');
 
+//Estas son las 2 rutas que agregué
+Route::get('perfiles/{user}/edit', 'PerfilController@edit');
+Route::patch('perfiles/{user}', 'PerfilController@update');
+
 /**
  * Rutas especiales para controles específicos
  */

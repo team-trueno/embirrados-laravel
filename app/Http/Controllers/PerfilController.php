@@ -9,6 +9,16 @@ use Illuminate\Http\Request;
 class PerfilController extends Controller
 {
     /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware ('auth')->except(['show']);
+    }
+
+    /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
@@ -48,7 +58,7 @@ class PerfilController extends Controller
     public function show(User $user)
     {
         //return dd($user);
-        return view('usuarios.show', [
+        return view('perfiles.show', [
             'usuario' => $user,
         ]);
     }
@@ -59,9 +69,13 @@ class PerfilController extends Controller
      * @param  \App\Perfil  $perfil
      * @return \Illuminate\Http\Response
      */
-    public function edit(Perfil $perfil)
+    public function edit(User $user)
     {
-        //
+        abort_unless(auth()->user()->id == $user->id, 403);
+
+        return view('perfiles.edit', [
+            'usuario' => $user,
+        ]);
     }
 
     /**
@@ -71,9 +85,37 @@ class PerfilController extends Controller
      * @param  \App\Perfil  $perfil
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Perfil $perfil)
+    public function update(Request $request, User $user)
     {
-        //
+        $reglas = [
+            'name' => ['string', 'max:255'],
+            'apellido' => ['string', 'max:255'],
+            'usuario' => ['sometimes','required','string', 'max:255'],
+            'email' => ['sometimes','required','string','email','max:255'],
+            'fecha_nac' => ['nullable','date','before:-18 years']
+        ];
+
+        $mensajes = [
+            'string' => 'El campo :attribute debe ser un texto',
+            'min' => 'El campo :attribute debe tener un minimo de :min',
+            'max' => 'El campo :attribute debe tener un máximo de :max',
+            'numeric' => 'El campo :attribute debe ser un numero',
+            'integer' => 'El campo :attribute debe ser un número entero'
+        ];
+
+        abort_unless(auth()->user()->id == $user->id, 403);
+
+        $this->validate($request, $reglas, $mensajes);
+
+        $user->update([
+            'name' => $request['name'],
+            'apellido' => $request['apellido'],
+            'usuario' => $request['usuario'],
+            'email' => $request['email'],
+            'fecha_nac' => $request['fecha_nac']
+        ]);
+
+        return redirect()->action('PerfilController@show', $user->id);
     }
 
     /**

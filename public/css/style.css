@@ -103,3 +103,8 @@ footer.page-footer a {
     border-radius: 36px;
     border: 2px #fff solid;
 }
+
+.card-img-top {
+    width: 25rem;
+    height: 25rem;
+}
